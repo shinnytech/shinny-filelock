@@ -12,9 +12,9 @@ class TestSimple(unittest.TestCase):
 
     def test_non_blocking_lock(self):
         local_path = "/tmp/test.lock"
-        with flocked(local_path, create_file=True):
+        with flocked(local_path, blocking=False, create_file=True):
             try:
-                with flocked(local_path, create_file=True):
+                with flocked(local_path, blocking=False, create_file=True):
                     pass
             except Exception as e:
                 self.assertEqual(e.__class__, BlockingIOError)
