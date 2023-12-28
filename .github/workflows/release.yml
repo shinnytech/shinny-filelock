@@ -5,9 +5,8 @@ name: Release
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ '**' ]
+    tags:
+      - '[0-9]+.*'
 
 jobs:
   build-and-publish:
@@ -26,7 +25,6 @@ jobs:
       with:
         python-version: '3.x'
     - name: Edit version number
-      if: startsWith(github.event.ref, 'refs/tags')
       run: |
         sed -i "s@0\.0\.0@$(echo ${GITHUB_REF##*/})@" pyproject.toml
     - name: Install build dependencies
@@ -34,7 +32,4 @@ jobs:
     - name: Build
       run: python -m build .
     - name: Publish
-      if: startsWith(github.event.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        skip-existing: true
