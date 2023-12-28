@@ -18,14 +18,11 @@ def flocked(path, blocking=True, create_file=False):
         fd = os.open(path, fd_flags)
         if fd == -1:
             raise ValueError()
-        try:
-            flags = fcntl.LOCK_EX
-            if not blocking:
-                flags |= fcntl.LOCK_NB
-            fcntl.flock(fd, flags)
-            yield
-        except Exception as e:
-            raise e
+        flags = fcntl.LOCK_EX
+        if not blocking:
+            flags |= fcntl.LOCK_NB
+        fcntl.flock(fd, flags)
+        yield
     finally:
         if fd != -1:
             # close fd will release lock automatically
