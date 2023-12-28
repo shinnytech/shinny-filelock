@@ -5,15 +5,19 @@ name: Release
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ '**' ]
 
 jobs:
   build-and-publish:
+    name: Upload release to PyPI
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/<your-pypi-project-name>
     permissions:
-      # IMPORTANT: this permission is mandatory for trusted publishing
-      id-token: write
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -21,11 +25,16 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
+    - name: Edit version number
+      if: startsWith(github.event.ref, 'refs/tags')
+      run: |
+        sed -i "s@0\.0\.0@$(echo ${GITHUB_REF##*/})@" pyproject.toml
     - name: Install build dependencies
       run: python -m pip install -U setuptools wheel build
     - name: Build
       run: python -m build .
     - name: Publish
+      if: startsWith(github.event.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         skip-existing: true
