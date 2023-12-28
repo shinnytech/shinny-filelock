@@ -81,7 +81,7 @@ classifiers = [  # Optional
   "Intended Audience :: Developers",
 
   # Pick your license as you wish
-  "License :: OSI Approved :: MIT License",
+  "License :: OSI Approved :: Apache Software License",
 
   # Specify the Python versions you support here. In particular, ensure
   # that you indicate you support Python 3. These classifiers are *not*
